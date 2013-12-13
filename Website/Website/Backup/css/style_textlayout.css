@@ -1,0 +1,8 @@
+.cssdemo{
+    letter-spacing: 5px;
+    word-spacing: 1cm;
+    text-decoration: underline;
+    text-transform: capitalize;
+    text-align: center;
+    line-height: 30pt;
+}

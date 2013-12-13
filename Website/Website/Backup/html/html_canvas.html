@@ -1,0 +1,129 @@
+<!DOCTYPE html> 
+<html lang="de">
+<head> 
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title> Webhuesli  n00bsoft</title> 
+  <meta name="description" content="Steuerung des Webhueslis ueber das Web" /> 
+  <link href="../css/3-spalten-layout.css" type="text/css" rel="stylesheet" /> 
+  <!--[if IE]> <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script> <![endif]--> 
+</head> 
+
+<body> 
+<header> 
+  <p id="logotext"> 
+	<strong>Webhuesli Bedienfeld</strong> 
+	</p> 
+  <p> 
+	Embedded Webhuesli<br /> 
+	</p> 
+</header> 
+
+<div id="wrapper">
+
+<nav id="steuerungoben"> 
+	<ul> 
+	<li><a href="../index.html">Home</a></li> 
+
+	<li><a href="js_example.html">JavaScript</a> 
+	</ul> 
+</nav> 
+
+<nav id="steuerunglinks"> 
+	<ul> 
+		<li><a href="html_seitenstruktur.html">HTML Seitenstruktur</a></li> 
+		<li><a href="html_divspan.html">HTML div und span</a></li> 
+
+  </ul> 
+</nav> 
+
+<aside> 
+  <p><em>Validierung:</em></p>
+	<p><a href="http://www.ti.bfh.ch"><img src="../bilder/BFH_Logo.png" 
+	alt="BFH" height="50" width="auto" background= "fixed" /></a>
+  </p>
+	<p><a href="http://html5.validator.nu"><img src="../bilder/validator_nu.jpg" 
+	alt="Validate HTML5" height="50" width="auto" /></a>
+  </p>
+  <p><em>Weitere Informationen:</em></p>
+	<p><a href="http://www.xkcd.com"><img src="../bilder/small_logo.png" 
+	alt="XKCD Webcomic" height="50" width="auto" /></a>
+	</p>
+	<p><a href="https://github.com/stocyr/Webhuesli"><img src="../bilder/inspectocat.jpg" 
+	alt="Git project hosting" height="50" width="auto" /></a>
+	</p>
+
+  
+</aside> 
+
+<article>
+<section> 
+	<h1>Canvas</h1> 
+<canvas id="myCanvas" width="400" height="300" style="border:1px solid #c3c3c3;">
+Your browser does not support the HTML5 canvas tag.
+</canvas>
+
+<script>
+
+/* canvas erstellen */
+var canvas=document.getElementById("myCanvas");
+var ctx=canvas.getContext("2d");
+ 
+/* Handler fuer Mouse-click im canvas-Bereich */ 
+function on_canvas_click(ev) {
+  // ... x,y sind die absoluten Koordinaten innerhalb des Canvas
+  var x = ev.clientX - canvas.offsetLeft;
+  var y = ev.clientY - canvas.offsetTop;
+  var message = "Mouse-Position: x=" + x + "y=" + y;
+  ctx.font="20px Arial";
+  ctx.clearRect(0,260,400,40);  /* alten Text loeschen */
+  ctx.fillStyle = "#FF0000";
+  ctx.fillText(message,60,290);  /* neuen Text schreiben */
+  
+} 
+ 
+/* Handler fure Mouse-click registrieren */ 
+canvas.addEventListener('click', on_canvas_click, false);
+
+/* Rechteck zeichnen */
+ctx.fillStyle="#FF5500";
+ctx.fillRect(10,30,100,50);
+
+/* Gerade zeichnen */
+ctx.moveTo(0,0);
+ctx.lineTo(200,100);
+ctx.stroke();
+
+/* Kreis zeichnen */
+ctx.beginPath();
+ctx.arc(100,150,40,0,2*Math.PI);
+ctx.strokeStyle = "#0000FF";
+ctx.stroke();
+ctx.fillStyle = "#00FF00";
+ctx.fill();
+
+/* Text schreiben */
+ctx.font="30px Arial";
+ctx.fillStyle = "#0000FF";
+ctx.fillText("Hello World",200,50);
+
+/* Bild zeichnen */
+var cat = new Image();
+cat.src = "../bilder/haus.jpg";
+cat.onload = function() {
+  ctx.drawImage(cat, 150, 100, 200, 160);
+};
+
+</script>
+
+	
+	
+</section> 
+</article>
+
+<footer> 
+	<p>© 2013 - n00bSoft</p> 
+</footer> 
+
+</div>
+</body> 
+</html>

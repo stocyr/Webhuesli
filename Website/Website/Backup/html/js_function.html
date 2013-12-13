@@ -1,0 +1,81 @@
+<!DOCTYPE html> 
+<html lang="de">
+<head> 
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<title> HTML Einführung</title> 
+  <meta name="description" content="HTML Einführung im Kernmodul Embedded Systems" /> 
+  <link href="../css/3-spalten-layout.css" type="text/css" rel="stylesheet" /> 
+  <link href="../css/style_box.css" type="text/css" rel="stylesheet" /> 
+  <!--[if IE]> <script   src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script> <![endif]--> 
+  
+  <script>
+  <!--
+  function PrintMinimum(a, b)
+  {
+    var min;
+    if(a > b) min = b;
+    else min = a;
+    alert("Das Minimum ist " + min );
+  }
+  -->
+  </script>
+</head> 
+
+<body onLoad="PrintMinimum(3, 6)"> 
+<header> 
+	<p id="logotext"> 
+	<strong>Beispiele zur Webseiten-Programmierung</strong> 
+	</p>
+	<p> 
+	Kernmodul Embedded Systems<br /> 
+	</p> 
+</header> 
+
+<div id="wrapper">
+
+<nav id="steuerungoben"> 
+	<ul> 
+	<li><a href="../index.html">Home</a></li> 
+	<li><a href="html_seitenstruktur.html">HTML</a> 
+	<li><a href="css_selektoren.html">CSS</a> 
+	<li><a href="js_example.html">JavaScript</a> 
+	</ul>
+</nav> 
+
+<nav id="steuerunglinks"> 
+	<ul> 
+		<li><a href="js_example.html">Erstes Beispiel</a> 
+		<li><a href="js_function.html">Funktionen</a> 
+		<li><a href="js_dialog.html">Dialogboxen</a> 
+		<li><a href="js_windowopen.html">Window-Objekt</a>  
+	</ul> 
+</nav> 
+
+<aside> 
+  <p><em>Weitere Informationen:</em></p>
+	<p><a href="http://www.w3schools.com/css/default.asp"><img src="../bilder/w3css.gif" 
+	alt="CSS Tutorial" height="50" width="120" /></a>
+	</p>
+  <p><a href="http://hslpicker.com"><img src="../bilder/color_picker.gif" 
+	alt="Color Picker" height="50" width="120" /></a>
+	</p>
+  <p><a href="http://www.css3generator.com"><img src="../bilder/css3_generator.jpg" 
+	alt="CSS3-Generator" height="50" width="120" /></a>
+	</p>
+</aside> 
+
+<article>
+<section> 
+	<h1>JavaScript Funktionen</h1> 
+	<p>Beachten Sie, dass die JavaScript-Funktion PrintMinimum() schon beim Laden der Seite durch das onLoad-Attribut im body-Tag aufgerufen wird.</p>
+</section> 
+
+
+</article>
+<footer> 
+	<p>© 2013 - Roger Weber</p> 
+</footer> 
+
+</div>
+</body> 
+</html>

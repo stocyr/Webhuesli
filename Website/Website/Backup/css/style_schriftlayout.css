@@ -1,0 +1,13 @@
+section h2 { 
+    font-family: Verdana, sans-serif; 
+    font-style: normal;
+    font-weight: bold; 
+    font-size: 25px; 
+    color: red;
+}
+.spezialschrift{
+    font-family: "Times New Roman", serif; 
+    font-style: oblique;
+    font-weight: 200; 
+    font-size: large; 
+}

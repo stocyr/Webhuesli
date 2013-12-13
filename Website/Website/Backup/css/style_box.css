@@ -1,0 +1,8 @@
+#mybox{
+  background: hsl(182, 100%, 50%);
+  width: 200px;
+  padding: 10px;
+  border: 20px solid hsl(200, 10%, 50%);
+  margin-left: 100px;
+  margin-bottom: 50px;
+}

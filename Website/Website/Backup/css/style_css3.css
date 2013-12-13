@@ -1,0 +1,30 @@
+.mytextshadow {
+    font-family: Verdana, sans-serif; 
+    font-style: normal;
+    font-weight: bold; 
+    font-size: 25px; 
+    color: red;
+    text-shadow: 2px 2px 5px #0066ff;
+}
+
+.myroundedbox{
+  background: hsl(182, 100%, 50%);
+  width: 260px;
+  padding: 10px;
+  margin-left: 100px;
+  margin-bottom: 50px;
+  border-top-left-radius: 30px;
+  border-top-right-radius: 15px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 45px;
+  box-shadow: 2px 2px 5px #0000ff;
+}
+
+.mygradientbox{
+  color: white;
+  background: radial-gradient(ellipse at center, #b4ddb4,#002400); 
+  width: 260px;
+  padding: 10px;
+  margin-left: 100px;
+  margin-bottom: 50px;
+}
