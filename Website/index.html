@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>Quick n'dirty socket connection</title>
+</head>
+
+<body>
+    <h1>Socket Connector</h1>
+    
+    <p>
+    <label for="my_text">Host:</label>
+    <input type="text" id="host_name" name="host_name" placeholder="Enter host address here" />
+    </p>
+    
+    <p>
+    <label for="my_text">Port:</label>
+    <input type="text" id="port_number" name="port_number" placeholder="Enter host port number here" />
+    </p>
+    
+    <p>
+    <input type="button" id="button_connect" name="button_connect" value="Connect" onclick="ConnectPressed()" />   
+    <input type="button" id="button_disconnect" name="button_disconnect" value="Disconnect" onclick="DisconnectPressed()" />
+    </p>
+    
+    <p>
+    <input type="text" id="data" name="data" placeholder="Enter string to send here" />  
+    <input type="button" id="button_send" name="button_send" value="Send" onclick="SendPressed()" />
+    </p>
+	
+    <SCRIPT SRC="code.js">
+    </SCRIPT>
+
+</body>
+</html>
