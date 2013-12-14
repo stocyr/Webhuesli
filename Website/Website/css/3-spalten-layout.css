@@ -3,7 +3,7 @@
     padding: 0;
 }
 body {
-    text-align: center;
+		text-align: center;
 		background-image: url(../bilder/background.png);
 		background-attachment: fixed;
 		background-size: cover;
@@ -123,7 +123,7 @@ section {
 section h1 {
     padding-top: 20px;
     padding-bottom: 0.4em;
-    color: #aaaa00;
+    color: #FAC710;
 }
 section p {
     padding-bottom: 1em;
@@ -159,5 +159,5 @@ footer {
 }
 
 h1 {
-    color: red;
+    color: #FAC711;
 }
