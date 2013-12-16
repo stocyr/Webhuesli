@@ -29,13 +29,17 @@
 
 	<li><a href="html_websocket.html">Terminal</a> 
 	</ul> 
-	
+
 </nav> 
 
 <nav id="steuerunglinks"> 
-	<ul> 
-		<li><a href="html_websocket.html">Terminal</a></li> 
-	</ul> 
+	<p>Kronleuchter </p>
+	<div class="container">
+		<div class="slider">
+			<input type = "range" min="0" max="100" onchange="rangevalue.value=value"/>
+			<output id="rangevalue">50</output>
+		</div>
+	</div>
 </nav> 
 
 <aside> 
@@ -53,7 +57,6 @@
 	<p><a href="https://github.com/stocyr/Webhuesli"><img src="../bilder/inspectocat.jpg" 
 	alt="Git project hosting" height="50" width="auto" /></a>
 	</p>
-
   
 </aside> 
 
@@ -64,12 +67,16 @@
 Your browser does not support the HTML5 canvas tag.
 </canvas>
 
+
+
 <script>
 
 /* canvas erstellen */
 var canvas=document.getElementById("myCanvas");
 var ctx=canvas.getContext("2d");
- 
+
+//var rangeslider = document.getElementByID("rangevalue");
+
 /* Handler fuer Mouse-click im canvas-Bereich */ 
 function on_canvas_click(ev) {
   // ... x,y sind die absoluten Koordinaten innerhalb des Canvas
@@ -80,7 +87,9 @@ function on_canvas_click(ev) {
   ctx.clearRect(0,300,400,50);  /* alten Text loeschen */
   ctx.fillStyle = "#000000";
   ctx.fillText(message,10,315);  /* neuen Text schreiben */
-  
+  message = "Slider: " +rangevalue.value;
+  ctx.fillText(message, 10, 330);
+
 } 
  
 /* Handler fure Mouse-click registrieren */ 
