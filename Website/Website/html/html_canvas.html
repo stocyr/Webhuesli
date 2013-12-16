@@ -36,10 +36,29 @@
 	<p>Kronleuchter </p>
 	<div class="container">
 		<div class="slider">
-			<input type = "range" min="0" max="100" onchange="rangevalue.value=value"/>
-			<output id="rangevalue">50</output>
+			<input id="s_kronleuchter" type = "range" min="0" max="100" value="0" onchange="kronleuchter.value=value"/>
+			<output id="kronleuchter">0</output>
 		</div>
 	</div>
+	
+	<p>Lampe </p>
+	<div class="container">
+		<div class="slider">
+			<input id="s_lampe" type = "range" min="0" max="100" value="0" onchange="lampe.value=value, lamp_change(this.value)"/>
+			<output id="lampe">0</output>
+		</div>
+	</div>
+	
+		<p>Heizung Soll: </p>
+	<div class="container">
+		<div class="slider">
+			<input id="s_heizung" type = "range" min="15" max="30" value="22" onchange="heizung.value=value"/>
+			<output id="heizung">22°C</output>
+		</div>
+	</div>
+	<p>Heizung Ist:	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<output id="heizung_ist">22°C</output> </p>
+	
+	
 </nav> 
 
 <aside> 
@@ -72,7 +91,8 @@ Your browser does not support the HTML5 canvas tag.
 <script>
 
 /* canvas erstellen */
-var canvas=document.getElementById("myCanvas");
+var canvas = document.getElementById("myCanvas");
+
 var ctx=canvas.getContext("2d");
 
 //var rangeslider = document.getElementByID("rangevalue");
@@ -87,39 +107,21 @@ function on_canvas_click(ev) {
   ctx.clearRect(0,300,400,50);  /* alten Text loeschen */
   ctx.fillStyle = "#000000";
   ctx.fillText(message,10,315);  /* neuen Text schreiben */
-  message = "Slider: " +rangevalue.value;
+  message = "Kronleuchter: " +kronleuchter.value + " Lampe : " + lampe.value + " Heizung Soll: " +heizung.value +" Ist: " + heizung_ist.value;
   ctx.fillText(message, 10, 330);
 
 } 
- 
+ function lamp_change(slideAmount){
+	heizung_ist.value = slideAmount;
+ }
 /* Handler fure Mouse-click registrieren */ 
 canvas.addEventListener('click', on_canvas_click, false);
 
-/* Rechteck zeichnen 
-ctx.fillStyle="#FF5500";
-ctx.fillRect(10,30,100,50);
-*/
-/* Gerade zeichnen 
-ctx.moveTo(0,0);
-ctx.lineTo(200,100);
-ctx.stroke();
-*/
-/* Kreis zeichnen 
-ctx.beginPath();
-ctx.arc(100,150,40,0,2*Math.PI);
-ctx.strokeStyle = "#0000FF";
-ctx.stroke();
-ctx.fillStyle = "#00FF00";
-ctx.fill();
-*/
-/* Text schreiben 
-ctx.font="30px Arial";
-ctx.fillStyle = "#0000FF";
-ctx.fillText("Hello World",200,50);
-*/
+
+
 /* Bild zeichnen */
 var cat = new Image();
-cat.src = "../bilder/haus.jpg";
+cat.src = "../bilder/haus.png";
 cat.onload = function() {
   ctx.drawImage(cat, 0, 0, 400, 300);
 };
