@@ -4,7 +4,7 @@
 }
 body {
 		text-align: center;
-		background-image: url(../bilder/background.png);
+		background-image: url(../bilder/background.jpg);
 		background-attachment: fixed;
 		background-size: cover;
 		font-family: Arial, sans-serif;
@@ -25,7 +25,7 @@ header, nav, footer, aside, section {
 
 header {
     /* background-color: yellow; */
-		background-image: url(../bilder/plot2.png);
+		background-image: url(../bilder/plot2.gif);
 		width: 900px;
 		height: 290px;
 		background-position: center;
