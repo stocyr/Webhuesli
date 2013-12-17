@@ -102,14 +102,14 @@ header a {
 	border-top-color: #CCCCCC;
 	border-left-color: #CCCCCC;
 	padding: 5px;
-  width: 100%;
+  width: 390px;
 	height: 172px;
 	overflow-y: scroll;
 }
 
 #consoleLog p {
   font-size: 11px;
-	line-height: 150%;
+	line-height: 20%;
 }
 
 

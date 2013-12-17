@@ -80,18 +80,19 @@
     <input type="text" id="data" name="data" placeholder="Enter string to send here" />  
     <input type="button" id="button_send" name="button_send" value="Send" onclick="SendPressed()" />
     </p>
-	
-    <SCRIPT SRC="../javascript/code.js">
-    </SCRIPT>
+    
+    <p/>
     
     <div id="echo-log">
         <strong>Log:</strong>
         <div id="consoleLog"></div>
-        <button id="clearLogBut" style="position: relative; top: 3px;" onclick="ClearLogPressed">Clear log</button>
+        <button id="clearLogBut" style="position: relative; top: 3px;" onclick="ClearLogPressed()">Clear log</button>
 	</div>
     
+    <SCRIPT SRC="../javascript/websocket.js">
+    </SCRIPT>
+    
     <p/>
-	
 </section> 
 </article>
 

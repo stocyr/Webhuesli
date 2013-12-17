@@ -3,10 +3,8 @@ var consoleLog;
 var sendBox;
 var wsEchoURI = "ws://echo.websocket.org/";
 
-function onPageLoad() {
-    consoleLog = document.getElementById("consoleLog");
-    sendBox = document.getElementById('data');
-}
+consoleLog = document.getElementById("consoleLog");
+sendBox = document.getElementById('data');
 
 function ConnectPressed(){
     //alert("trying to connect...");
@@ -85,5 +83,3 @@ function ClearLogPressed()
         consoleLog.removeChild(consoleLog.lastChild);
     }
 }
-
-window.addEventListener("load", onPageLoad, false);
