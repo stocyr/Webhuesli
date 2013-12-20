@@ -6,6 +6,10 @@ var ctx=canvas.getContext("2d");
 var consoleLog = document.getElementById("consoleLog");
 var webSocket;
 var stellwertHeizung = 100;
+var kl = document.getElementById("s_kronleuchter");
+var lp = document.getElementById("s_lampe");
+var tv = document.getElementById("label_tv");
+var hz = document.getElementById("s_heizung");
 
 //var rangeslider = document.getElementByID("rangevalue");
 
@@ -14,10 +18,6 @@ function on_canvas_click(ev) {
   // ... x,y sind die absoluten Koordinaten innerhalb des Canvas, scrollOffset berücksichtigen
   var x = ev.clientX - canvas.offsetLeft + document.body.scrollLeft + document.documentElement.scrollLeft;
   var y = ev.clientY - canvas.offsetTop + document.body.scrollTop + document.documentElement.scrollTop;
-  var kl = document.getElementById("s_kronleuchter");
-  var lp = document.getElementById("s_lampe");
-  var tv = document.getElementById("label_tv");
-  var hz = document.getElementById("s_heizung");
   
   var message = "Mouse-Position: x=" + x + "y=" + y;
   logToConsole("Mouse-Position: x=" + x + "y=" + y);
@@ -62,40 +62,36 @@ function on_canvas_click(ev) {
   if(x > 164 && x < (163 + 23) && y > 227 && y < (227 + 14)){
         if(tv.value == "OFF"){
             tv.value = "ON";
-            tvbild.src = "../bilder/TV_on.png";
         }
         else{
             tv.value = "OFF";
         }
-        
         tv_change(tv.value);
 		
 		logToConsole('<span style="color: blue;">TV: ' + tv.value+'</span>');
-        
-        sendTvPair(tv.value);
 	}
 }
 
 function tv_change(value){
-
     /* Bild zeichnen */
     var tvbild = new Image();
     
     if(value == "OFF"){
-        tvbild.src = "../bilder/TV_on.png";
-    }
-    else{
         tvbild.src = "../bilder/TV_off.png";
     }
-    
+    else{
+        tvbild.src = "../bilder/TV_on.png";
+    }
+        
     tvbild.onload = function() {
         ctx.drawImage(tvbild, 163, 227, 23, 14);
-    };	
+    };
+    /* Hier Wert an BeagleBone senden */
+    sendTvPair(value);
 }
 
 /* Handler für Ständerlampe, GUI aktualisieren und Kommunikation zum Huesli */
  function lamp_change(slideAmount){
-	
 	/* Bild zeichnen */
 	var img_lampe_on = new Image();
 	var img_lampe = new Image();
@@ -118,7 +114,6 @@ function tv_change(value){
  
  /* Handler für Kronleuchter, GUI aktualisieren und Kommunikation zum Huesli */
  function kron_change(slideAmount){
-	
 	/* Bild zeichnen */
 	var img_lampe_on = new Image();
 	var img_lampe = new Image();
@@ -137,32 +132,19 @@ function tv_change(value){
 	};
 	/* Hier Wert an BeagleBone senden */
 	sendLeuchterPair(slideAmount);
+    sendTvPair("OFF");
  }
  
  function heizung_soll_change(slideAmount){
 	/* Hier Wert an BeagleBone senden */
 	sendHeizungPair(slideAmount);
  }
- 
-
- 
-/* Handler fure Mouse-click registrieren */ 
-canvas.addEventListener('click', on_canvas_click, false);
-
-
-/* Bild zeichnen */
-var cat = new Image();
-cat.src = "../bilder/haus.gif";
-cat.onload = function() {
-  ctx.drawImage(cat, 0, 0, 400, 300);
-};
 
 /* zu Teszwecken hier heizung setzen */
 heating(stellwertHeizung);
 
 /* Illustrates the Heating control value */
  function heating(stellwert){
-	
 	/* Bild rechts zeichnen */
 	var img_heating_on = new Image();
 	var img_heating = new Image();
@@ -197,6 +179,16 @@ heating(stellwertHeizung);
 	};
 	
  }
+ 
+ /* Handler fure Mouse-click registrieren */ 
+canvas.addEventListener('click', on_canvas_click, false);
+
+/* Abschliessend Bild zeichnen */
+var cat = new Image();
+cat.src = "../bilder/haus.gif";
+cat.onload = function() {
+  ctx.drawImage(cat, 0, 0, 400, 300);
+};
 
 /* Log Console */
 function logToConsole(message)
@@ -239,13 +231,13 @@ function onMessage(evt)
     logToConsole('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
     
     /* Es könnten mehrere Pairs in einer JSON Message sein, also damit rechnen */
-    var jsonObject = JSON.parse(evt.data) ;
+    var jsonObject = JSON.parse(evt.data);
     /*for(var key in jsonObject){
         ...
     }*/
     if(jsonObject.TV){
         tv.value = jsonObject.TV;
-        tv_change(jsonObject.TV);
+        tv_change(tv.value);
     }
     if(jsonObject.Lampe){
         lp.value = jsonObject.Lampe;
