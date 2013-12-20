@@ -72,6 +72,8 @@ function on_canvas_click(ev) {
 		};	
 		
 		logToConsole('<span style="color: blue;">TV: ' + tv.value+'</span>');
+        
+        sendTvPair(tv.value);
 	}
 	
 } 
@@ -95,7 +97,7 @@ function on_canvas_click(ev) {
 		ctx.globalAlpha = 1.0;
 	};
 	/* Hier Wert an BeagleBone senden */
-	
+    sendLampPair(slideAmount);
  }
  
  /* Handler für Kronleuchter, GUI aktualisieren und Kommunikation zum Huesli */
@@ -118,7 +120,12 @@ function on_canvas_click(ev) {
 		ctx.globalAlpha = 1.0;
 	};
 	/* Hier Wert an BeagleBone senden */
-	
+	sendLeuchterPair(slideAmount);
+ }
+ 
+ function heizung_soll(slideAmount){
+	/* Hier Wert an BeagleBone senden */
+	sendHeizungPair(slideAmount);
  }
  
 
@@ -157,4 +164,21 @@ function ClearLogPressed()
     {
         consoleLog.removeChild(consoleLog.lastChild);
     }
+}
+
+/* Websocket Management */
+function sendTvPair(val){
+
+}
+
+function sendLampPair(val){
+
+}
+
+function sendLeuchterPair(val){
+
+}
+
+function sendHeizungPair(val){
+
 }
