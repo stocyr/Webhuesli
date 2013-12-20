@@ -4,14 +4,15 @@ var ctx=canvas.getContext("2d");
 
 /* Andere globale Variablen */
 var consoleLog = document.getElementById("consoleLog");
+var stellwertHeizung = 100;
 
 //var rangeslider = document.getElementByID("rangevalue");
 
 /* Handler fuer Mouse-click im canvas-Bereich */ 
 function on_canvas_click(ev) {
-  // ... x,y sind die absoluten Koordinaten innerhalb des Canvas
-  var x = ev.clientX - canvas.offsetLeft;
-  var y = ev.clientY - canvas.offsetTop;
+  // ... x,y sind die absoluten Koordinaten innerhalb des Canvas, scrollOffset berücksichtigen
+  var x = ev.clientX - canvas.offsetLeft + document.body.scrollLeft + document.documentElement.scrollLeft;
+  var y = ev.clientY - canvas.offsetTop + document.body.scrollTop + document.documentElement.scrollTop;
   var kl = document.getElementById("s_kronleuchter");
   var lp = document.getElementById("s_lampe");
   var tv_var = document.getElementById("tv");
@@ -85,13 +86,13 @@ function on_canvas_click(ev) {
 	/* altes Bild loeschen */
 	img_lampe.src = "../bilder/Lampe_off.png";
 	img_lampe.onload = function() {
-		ctx.drawImage(img_lampe, 248, 196, 21, 17);
+		ctx.drawImage(img_lampe, 248, 195, 21, 17);
 	};
 	img_lampe_on.src = "../bilder/Lampe_on.png";
 	img_lampe_on.onload = function() {
 		/* Transparenz setzen */
 		ctx.globalAlpha = slideAmount/100.0;
-		ctx.drawImage(img_lampe_on, 248, 196, 21, 17);
+		ctx.drawImage(img_lampe_on, 248, 195, 21, 17);
 		ctx.globalAlpha = 1.0;
 	};
 	/* Hier Wert an BeagleBone senden */
@@ -127,13 +128,53 @@ function on_canvas_click(ev) {
 canvas.addEventListener('click', on_canvas_click, false);
 
 
-
 /* Bild zeichnen */
 var cat = new Image();
 cat.src = "../bilder/haus.gif";
 cat.onload = function() {
   ctx.drawImage(cat, 0, 0, 400, 300);
 };
+
+/* zu Teszwecken hier heizung setzen */
+heating(stellwertHeizung);
+
+/* Illustrates the Heating control value */
+ function heating(stellwert){
+	
+	/* Bild rechts zeichnen */
+	var img_heating_on = new Image();
+	var img_heating = new Image();
+	
+	/* altes Bild loeschen */
+	img_heating.src = "../bilder/Heizung_off.png";
+	img_heating.onload = function() {
+		ctx.drawImage(img_heating, 278, 236, 9, 30);
+	};
+	img_heating_on.src = "../bilder/Heizung_on.png";
+	img_heating_on.onload = function() {
+		/* Transparenz setzen */
+		ctx.globalAlpha = stellwert/100.0;
+		ctx.drawImage(img_heating_on, 278, 236, 9, 30);
+		ctx.globalAlpha = 1.0;
+	};
+	
+	/* Bild links zeichnen */
+	var img_heating_on_left = new Image();
+	var img_heating_left = new Image();
+	/* altes Bild loeschen */
+	img_heating_left.src = "../bilder/Heizung_off_left.png";
+	img_heating_left.onload = function() {
+		ctx.drawImage(img_heating_left, 132, 237, 9, 30);
+	};
+	img_heating_on_left.src = "../bilder/Heizung_on_left.png";
+	img_heating_on_left.onload = function() {
+		/* Transparenz setzen */
+		ctx.globalAlpha = stellwert/100.0;
+		ctx.drawImage(img_heating_on_left, 132, 237, 9, 30);
+		ctx.globalAlpha = 1.0;
+	};
+	
+ }
 
 /* Log Console */
 function logToConsole(message)
