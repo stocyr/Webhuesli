@@ -36,27 +36,27 @@
 	<p>Kronleuchter </p>
 	<div class="container">
 		<div class="slider">
-			<input id="s_kronleuchter" type = "range" min="0" max="100" value="0" onchange="kronleuchter.value=value, kron_change(this.value)"/>
-			<output id="kronleuchter">0</output>
+			<input id="slider_kronleuchter" type = "range" min="0" max="100" value="0" onchange="label_kronleuchter.value=value, kronleuchter_slider_callback(this.value)"/>
+			<output id="label_kronleuchter">0</output>
 		</div>
 	</div>
 	
 	<p>Lampe </p>
 	<div class="container">
 		<div class="slider">
-			<input id="s_lampe" type = "range" min="0" max="100" value="0" onchange="lampe.value=value, lamp_change(this.value)"/>
-			<output id="lampe">0</output>
+			<input id="slider_lampe" type = "range" min="0" max="100" value="0" onchange="label_lampe.value=value, lampe_slider_callback(this.value)"/>
+			<output id="label_lampe">0</output>
 		</div>
 	</div>
 	
 		<p>Heizung Soll: </p>
 	<div class="container">
 		<div class="slider">
-			<input id="s_heizung" type = "range" min="15" max="30" value="22" onchange="heizung.value=value, heizung_soll_change(this.value)"/>
-			<output id="heizung">22°C</output>
+			<input id="slider_heizung_soll" type = "range" min="15" max="30" value="22" onchange="label_heizung_soll.value=value, heizung_soll_slider_callback(this.value)"/>
+			<output id="label_heizung_soll">22°C</output>
 		</div>
 	</div>
-	<p>Heizung Ist:	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<output id="heizung_ist">22°C</output> </p>
+	<p>Heizung Ist:	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<output id="label_temp_ist">22°C</output> </p>
 	
 	<p>TV:	&nbsp;&nbsp;<output id="label_tv">OFF</output> </p>
 	
@@ -64,7 +64,7 @@
 </nav> 
 
 <aside> 
-  <p><em>Validierung:</em></p>
+  <p><em>HTML5 Validierung:</em></p>
 	<p><a href="http://www.ti.bfh.ch"><img src="../bilder/BFH_Logo.png" 
 	alt="BFH" height="50" width="auto" background= "fixed" /></a>
   </p>
