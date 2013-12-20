@@ -4,6 +4,7 @@ var ctx=canvas.getContext("2d");
 
 /* Andere globale Variablen */
 var consoleLog = document.getElementById("consoleLog");
+var webSocket;
 var stellwertHeizung = 100;
 
 //var rangeslider = document.getElementByID("rangevalue");
@@ -98,7 +99,7 @@ function on_canvas_click(ev) {
 		ctx.globalAlpha = 1.0;
 	};
 	/* Hier Wert an BeagleBone senden */
-    sendLampPair(slideAmount);
+    sendLampPair(slideAmount.toString());
  }
  
  /* Handler für Kronleuchter, GUI aktualisieren und Kommunikation zum Huesli */
@@ -121,12 +122,12 @@ function on_canvas_click(ev) {
 		ctx.globalAlpha = 1.0;
 	};
 	/* Hier Wert an BeagleBone senden */
-	sendLeuchterPair(slideAmount);
+	sendLeuchterPair(slideAmount.toString());
  }
  
  function heizung_soll(slideAmount){
 	/* Hier Wert an BeagleBone senden */
-	sendHeizungPair(slideAmount);
+	sendHeizungPair(slideAmount.toString());
  }
  
 
@@ -208,18 +209,43 @@ function ClearLogPressed()
 }
 
 /* Websocket Management */
-function sendTvPair(val){
+initSocket();
 
+function initSocket(){
+    webSocket = new WebSocket("ws://echo.websocket.org");
+    
+    webSocket.onopen = function (evt){ logToConsole("CONNECTED: " + evt.data); };
+    webSocket.onerror = function (evt){ logToConsole('<span style="color: red;">ERROR:</span> ' + evt.data); };
+    webSocket.onmessage = function (evt){ logToConsole('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>'); };
+    webSocket.onclose = function (evt){ logToConsole("DISCONNECTED: " + evt.data); };
+}
+
+function onOpen(evt)
+{
+    //alert("socket has been opened!" + " Location=" + location.host);
+    logToConsole("CONNECTED");
+}
+
+function sendTvPair(val){
+    var sendObj = { TV: val };
+    webSocket.send(JSON.stringify(sendObj));
+    logToConsole("SENT: " + JSON.stringify(sendObj));
 }
 
 function sendLampPair(val){
-
+    var sendObj = { Lampe: val };
+    webSocket.send(JSON.stringify(sendObj));
+    logToConsole("SENT: " + JSON.stringify(sendObj));
 }
 
 function sendLeuchterPair(val){
-
+    var sendObj = { Leuchter: val };
+    webSocket.send(JSON.stringify(sendObj));
+    logToConsole("SENT: " + JSON.stringify(sendObj));
 }
 
 function sendHeizungPair(val){
-
+    var sendObj = { TempSoll: val };
+    webSocket.send(JSON.stringify(sendObj));
+    logToConsole("SENT: " + JSON.stringify(sendObj));
 }
