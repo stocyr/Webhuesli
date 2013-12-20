@@ -1,10 +1,12 @@
 var webSocket;
 var consoleLog;
 var sendBox;
-var wsEchoURI = "ws://echo.websocket.org/";
+var wsEchoURI = "ws://echo.websocket.org";
 
 consoleLog = document.getElementById("consoleLog");
 sendBox = document.getElementById('data');
+
+ConnectPressed();   // already connect on load page
 
 function ConnectPressed(){
     //alert("trying to connect...");
