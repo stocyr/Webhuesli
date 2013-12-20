@@ -16,7 +16,8 @@ function on_canvas_click(ev) {
   var y = ev.clientY - canvas.offsetTop + document.body.scrollTop + document.documentElement.scrollTop;
   var kl = document.getElementById("s_kronleuchter");
   var lp = document.getElementById("s_lampe");
-  var tv_var = document.getElementById("tv");
+  var tv = document.getElementById("label_tv");
+  var hz = document.getElementById("s_heizung");
   
   var message = "Mouse-Position: x=" + x + "y=" + y;
   logToConsole("Mouse-Position: x=" + x + "y=" + y);
@@ -59,26 +60,39 @@ function on_canvas_click(ev) {
 	
 		/* wenn auf TV gedrückt */
   if(x > 164 && x < (163 + 23) && y > 227 && y < (227 + 14)){
-		var tvbild = new Image();
-		if(tv.value == "OFF"){
-			tv.value = "ON";
-			tvbild.src = "../bilder/TV_on.png";
-		}
-		else{
-			tv.value = "OFF";
-			tvbild.src = "../bilder/TV_off.png";
-		}
-		
-		tvbild.onload = function() {
-			ctx.drawImage(tvbild, 163, 227, 23, 14);
-		};	
+        if(tv.value == "OFF"){
+            tv.value = "ON";
+            tvbild.src = "../bilder/TV_on.png";
+        }
+        else{
+            tv.value = "OFF";
+        }
+        
+        tv_change(tv.value);
 		
 		logToConsole('<span style="color: blue;">TV: ' + tv.value+'</span>');
         
         sendTvPair(tv.value);
 	}
-	
-} 
+}
+
+function tv_change(value){
+
+    /* Bild zeichnen */
+    var tvbild = new Image();
+    
+    if(value == "OFF"){
+        tvbild.src = "../bilder/TV_on.png";
+    }
+    else{
+        tvbild.src = "../bilder/TV_off.png";
+    }
+    
+    tvbild.onload = function() {
+        ctx.drawImage(tvbild, 163, 227, 23, 14);
+    };	
+}
+
 /* Handler für Ständerlampe, GUI aktualisieren und Kommunikation zum Huesli */
  function lamp_change(slideAmount){
 	
@@ -99,7 +113,7 @@ function on_canvas_click(ev) {
 		ctx.globalAlpha = 1.0;
 	};
 	/* Hier Wert an BeagleBone senden */
-    sendLampPair(slideAmount.toString());
+    sendLampPair(slideAmount);
  }
  
  /* Handler für Kronleuchter, GUI aktualisieren und Kommunikation zum Huesli */
@@ -122,12 +136,12 @@ function on_canvas_click(ev) {
 		ctx.globalAlpha = 1.0;
 	};
 	/* Hier Wert an BeagleBone senden */
-	sendLeuchterPair(slideAmount.toString());
+	sendLeuchterPair(slideAmount);
  }
  
- function heizung_soll(slideAmount){
+ function heizung_soll_change(slideAmount){
 	/* Hier Wert an BeagleBone senden */
-	sendHeizungPair(slideAmount.toString());
+	sendHeizungPair(slideAmount);
  }
  
 
@@ -216,14 +230,43 @@ function initSocket(){
     
     webSocket.onopen = function (evt){ logToConsole("CONNECTED: " + evt.data); };
     webSocket.onerror = function (evt){ logToConsole('<span style="color: red;">ERROR:</span> ' + evt.data); };
-    webSocket.onmessage = function (evt){ logToConsole('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>'); };
+    webSocket.onmessage = function (evt){ onMessage(evt); };
     webSocket.onclose = function (evt){ logToConsole("DISCONNECTED: " + evt.data); };
 }
 
-function onOpen(evt)
+function onMessage(evt)
 {
-    //alert("socket has been opened!" + " Location=" + location.host);
-    logToConsole("CONNECTED");
+    logToConsole('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
+    
+    /* Es könnten mehrere Pairs in einer JSON Message sein, also damit rechnen */
+    var jsonObject = JSON.parse(evt.data) ;
+    /*for(var key in jsonObject){
+        ...
+    }*/
+    if(jsonObject.TV){
+        tv.value = jsonObject.TV;
+        tv_change(jsonObject.TV);
+    }
+    if(jsonObject.Lampe){
+        lp.value = jsonObject.Lampe;
+        lamp_change(jsonObject.Lamp);
+    }
+    if(jsonObject.Leuchter){
+        kl.value = jsonObject.Leuchter;
+        kron_change(jsonObject.Leuchter);
+    }
+    if(jsonObject.TempSoll){
+        hz.value = jsonObject.TempSoll;
+        heizung_soll_change(jsonObject.TempSoll);
+    }
+    if(jsonObject.TempIst){
+        hz.value = jsonObject.TempSoll;
+        heizung_soll_change(jsonObject.TempSoll);
+    }
+    if(jsonObject.Heizung){
+        stellwertHeizung = jsonObject.TempSoll;
+        heating(jsonObject.TempSoll);
+    }  
 }
 
 function sendTvPair(val){

@@ -52,13 +52,13 @@
 		<p>Heizung Soll: </p>
 	<div class="container">
 		<div class="slider">
-			<input id="s_heizung" type = "range" min="15" max="30" value="22" onchange="heizung.value=value, heizung_soll(this.value)"/>
+			<input id="s_heizung" type = "range" min="15" max="30" value="22" onchange="heizung.value=value, heizung_soll_change(this.value)"/>
 			<output id="heizung">22°C</output>
 		</div>
 	</div>
 	<p>Heizung Ist:	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<output id="heizung_ist">22°C</output> </p>
 	
-	<p>TV:	&nbsp;&nbsp;<output id="tv">OFF</output> </p>
+	<p>TV:	&nbsp;&nbsp;<output id="label_tv">OFF</output> </p>
 	
 	
 </nav> 
