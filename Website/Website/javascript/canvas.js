@@ -19,16 +19,6 @@ function on_canvas_click(ev) {
   var x = ev.clientX - canvas.offsetLeft + document.body.scrollLeft + document.documentElement.scrollLeft;
   var y = ev.clientY - canvas.offsetTop + document.body.scrollTop + document.documentElement.scrollTop;
   
-  var message = "Mouse-Position: x=" + x + "y=" + y;
-  logToConsole("Mouse-Position: x=" + x + "y=" + y);
-  
-  ctx.font="14px Arial";
-  ctx.clearRect(0,300,400,50);  /* alten Text loeschen */
-  ctx.fillStyle = "#000000";
-  ctx.fillText(message,10,315);  /* neuen Text schreiben */
-  message = "Kronleuchter: " +label_kronleuchter.value + " Lampe : " + label_lampe.value + " Heizung Soll: " +label_heizung_soll.value +" Ist: " + label_temp_ist.value;
-  ctx.fillText(message, 10, 330);
-  
   
   /* wenn auf Kronleuchter gedrückt */
   if(x > 196 && x < (196 + 22) && y > 156 && y < (156 + 22)){
@@ -188,6 +178,10 @@ heizung_ist_change(heizung_ist_defaultwert);
 		ctx.drawImage(img_heating_on_left, 132, 237, 9, 30);
 		ctx.globalAlpha = 1.0;
 	};
+ }
+ 
+ function reset_alarm(){
+	label_alarm.value = "OFF";
  }
  
  /* Handler fure Mouse-click registrieren */ 

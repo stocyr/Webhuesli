@@ -60,6 +60,10 @@
 	
 	<p>TV:	&nbsp;&nbsp;<output id="label_tv">OFF</output> </p>
 	
+	<p><form>
+		<input type="checkbox" name="vehicle" value="Bike"> Alarmanlage eingeschaltet
+	</form></p>
+	<p>Alarm:	&nbsp;&nbsp;<output id="label_alarm">OFF</output> </p>
 	
 </nav> 
 
@@ -85,7 +89,7 @@
 <section> 
 	<h1>Droggelbecher</h1>
     
-    <canvas id="myCanvas" width="400" height="350" style="border:1px solid #c3c3c3;">
+    <canvas id="myCanvas" width="400" height="300" style="border:1px solid #c3c3c3;">
     Your browser does not support the HTML5 canvas tag.
     </canvas>
     
@@ -109,7 +113,7 @@
 </footer> 
 
 </div>
-<div id="openModal" class="modalWindow">
+<div id="openModal" class="modalWindow" >
     <div>
          
         <div class="modalHeader">
@@ -124,11 +128,12 @@
          
         <div class="modalFooter">
             <a href="#cancel" title="Cancel" class="cancel">Cancel</a>
-            <a href="#ok" title="Ok" class="ok">Apply</a>
+            <a href="#ok" title="Ok" class="ok" onclick="reset_alarm()" >Apply</a>
             <p>Alarm zurücksetzen?</p>
             <div class="clear"></div>
         </div>
     </div>
 </div>
+
 </body> 
 </html>
