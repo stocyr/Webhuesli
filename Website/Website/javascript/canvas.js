@@ -10,6 +10,8 @@ var kronleuchter = document.getElementById("slider_kronleuchter");
 var lampe = document.getElementById("slider_lampe");
 var tv = document.getElementById("label_tv");
 var heizung_soll = document.getElementById("slider_heizung_soll");
+var alarm_active = document.getElementById("checkbox_alarm_active");
+var alarm = document.getElementById("label_alarm");
 
 //var rangeslider = document.getElementByID("rangevalue");
 
@@ -180,8 +182,17 @@ heizung_ist_change(heizung_ist_defaultwert);
 	};
  }
  
+ function alarm_active_callback(value){
+    if(alarm_active.checked){
+        sendAlarmPair("ACTIVE");
+    } else {
+        sendAlarmPair("INACTIVE");
+    }
+ }
+ 
  function reset_alarm(){
-	label_alarm.value = "OFF";
+	alarm.value = "OFF";
+    sendAlarmResetPair();
  }
  
  /* Handler fure Mouse-click registrieren */ 
@@ -254,6 +265,9 @@ function onMessage(evt)
         heizung_soll.value = jsonObject.TempSoll;
         heizung_soll_change_value(jsonObject.TempSoll);
     }
+    if(jsonObject.Alarm){
+        alarm_active.value = jsonObject.Alarm;
+    }
     
     // Normal Server INFO values:
     if(jsonObject.TempIst){
@@ -261,7 +275,13 @@ function onMessage(evt)
     }
     if(jsonObject.Heizung){
         heizung_ist_change(jsonObject.TempSoll);
-    }  
+    }
+    if(jsonObject.Lichtschranke){
+        if(jsonObject.Lichtschranke === "ON"){
+            window.showModalDialog("#openModal");
+            alarm.value = "ON";
+        }
+    }
 }
 
 function send_tv_pair(val){
@@ -284,6 +304,18 @@ function send_kronleuchter_pair(val){
 
 function sendHeizungPair(val){
     var sendObj = { TempSoll: val };
+    webSocket.send(JSON.stringify(sendObj));
+    logToConsole("SENT: " + JSON.stringify(sendObj));
+}
+
+function sendAlarmResetPair(){
+    var sendObj = { AlarmReset: "" };
+    webSocket.send(JSON.stringify(sendObj));
+    logToConsole("SENT: " + JSON.stringify(sendObj));
+}
+
+function sendAlarmPair(val){
+    var sendObj = { Alarm: val };
     webSocket.send(JSON.stringify(sendObj));
     logToConsole("SENT: " + JSON.stringify(sendObj));
 }

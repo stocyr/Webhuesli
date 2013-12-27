@@ -61,7 +61,7 @@
 	<p>TV:	&nbsp;&nbsp;<output id="label_tv">OFF</output> </p>
 	
 	<p><form>
-		<input type="checkbox" name="vehicle" value="Bike"> Alarmanlage eingeschaltet
+		<input id="checkbox_alarm_active" type="checkbox" onchange="alarm_active_callback(this.value)" > Alarmanlage eingeschaltet</input>
 	</form></p>
 	<p>Alarm:	&nbsp;&nbsp;<output id="label_alarm">OFF</output> </p>
 	
