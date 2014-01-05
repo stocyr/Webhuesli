@@ -12,6 +12,7 @@ var tv = document.getElementById("label_tv");
 var heizung_soll = document.getElementById("slider_heizung_soll");
 var alarm_active = document.getElementById("checkbox_alarm_active");
 var alarm = document.getElementById("label_alarm");
+var snd = new Audio("../multimedia/alarm.ogg"); // buffers automatically when created
 
 //var rangeslider = document.getElementByID("rangevalue");
 
@@ -21,10 +22,10 @@ function on_canvas_click(ev) {
   var x = ev.clientX - canvas.offsetLeft + document.body.scrollLeft + document.documentElement.scrollLeft;
   var y = ev.clientY - canvas.offsetTop + document.body.scrollTop + document.documentElement.scrollTop;
   
-  
+    
   /* wenn auf Kronleuchter gedrückt */
   if(x > 196 && x < (196 + 22) && y > 156 && y < (156 + 22)){
-		
+		play_alarm();
 		if(kronleuchter.value < 1){
 			kronleuchter.value = 100;
 		}
@@ -38,7 +39,7 @@ function on_canvas_click(ev) {
 	
 	/* wenn auf Lampe gedrückt */
   if(x > 248 && x < (248 + 21) && y > 196 && y < (196 + 17)){
-		
+		reset_alarm();
 		if(lampe.value < 1){
 			lampe.value = 100;
 		}
@@ -190,8 +191,18 @@ heizung_ist_change(heizung_ist_defaultwert);
     }
  }
  
+
+function play_alarm(){
+ 	alarm.value = "ON";
+	snd.load();
+	snd.play();
+	snd.addEventListener('ended',  function(){snd.play();});
+}
+ 
  function reset_alarm(){
 	alarm.value = "OFF";
+	
+	snd.pause();
     sendAlarmResetPair();
  }
  
@@ -279,7 +290,7 @@ function onMessage(evt)
     if(jsonObject.Lichtschranke){
         if(jsonObject.Lichtschranke === "ON"){
             window.showModalDialog("#openModal");
-            alarm.value = "ON";
+            play_alarm();
         }
     }
 }
