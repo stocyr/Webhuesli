@@ -5,7 +5,7 @@ var ctx=canvas.getContext("2d");
 /* Andere globale Variablen */
 var consoleLog = document.getElementById("consoleLog");
 var webSocket;
-var heizung_ist_defaultwert = 100;
+var heizung_ist_defaultwert = 0;
 var kronleuchter = document.getElementById("slider_kronleuchter");
 var lampe = document.getElementById("slider_lampe");
 var tv = document.getElementById("label_tv");
@@ -53,7 +53,7 @@ function on_canvas_click(ev) {
 	
 		/* wenn auf TV gedrückt */
   if(x > 164 && x < (163 + 23) && y > 227 && y < (227 + 14)){
-        if(tv.value == "OFF"){
+        if(tv.value === "OFF"){
             tv.value = "ON";
         }
         else{
@@ -69,7 +69,7 @@ function tv_change_value(value){
     /* Bild zeichnen */
     var tvbild = new Image();
     
-    if(value == "OFF"){
+    if(value === "OFF"){
         tvbild.src = "../bilder/TV_off.png";
     }
     else{
@@ -144,7 +144,6 @@ function lampe_change_value(slideAmount){
 	sendHeizungPair(slideAmount);
  }
 
-/* zu Teszwecken hier heizung_soll setzen */
 heizung_ist_change(heizung_ist_defaultwert);
 
 /* Illustrates the Heating control value */
