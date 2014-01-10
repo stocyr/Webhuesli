@@ -2,6 +2,7 @@ var webSocket;
 var consoleLog;
 var sendBox;
 var wsEchoURI = "ws://echo.websocket.org";
+//var wsEchoURI = "ws://" + location.hostname + ":5000";
 
 
 var consoleLog = document.getElementById("consoleLog");

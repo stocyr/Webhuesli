@@ -13,6 +13,9 @@ var heizung_soll = document.getElementById("slider_heizung_soll");
 var alarm_active = document.getElementById("checkbox_alarm_active");
 var alarm = document.getElementById("label_alarm");
 var snd = new Audio("../multimedia/alarm.ogg"); // buffers automatically when created
+//var address = "ws://echo.websocket.org";
+//var address = "ws://" + "147.87.174.91" + ":5000";
+var address = "ws://" + location.host + ":5000";
 
 //var rangeslider = document.getElementByID("rangevalue");
 
@@ -25,7 +28,6 @@ function on_canvas_click(ev) {
     
   /* wenn auf Kronleuchter gedrückt */
   if(x > 196 && x < (196 + 22) && y > 156 && y < (156 + 22)){
-		play_alarm();
 		if(kronleuchter.value < 1){
 			kronleuchter.value = 100;
 		}
@@ -39,7 +41,6 @@ function on_canvas_click(ev) {
 	
 	/* wenn auf Lampe gedrückt */
   if(x > 248 && x < (248 + 21) && y > 196 && y < (196 + 17)){
-		reset_alarm();
 		if(lampe.value < 1){
 			lampe.value = 100;
 		}
@@ -242,9 +243,9 @@ function ClearLogPressed()
 initSocket();
 
 function initSocket(){
-    webSocket = new WebSocket("ws://echo.websocket.org");
+    webSocket = new WebSocket(address);
     
-    webSocket.onopen = function (evt){ logToConsole("CONNECTED: " + evt.data); };
+    webSocket.onopen = function (evt){ logToConsole("CONNECTED to " + address + ": " + evt.data); };
     webSocket.onerror = function (evt){ logToConsole('<span style="color: red;">ERROR:</span> ' + evt.data); };
     webSocket.onmessage = function (evt){ onMessage(evt); };
     webSocket.onclose = function (evt){ logToConsole("DISCONNECTED: " + evt.data); };
@@ -258,6 +259,7 @@ function onMessage(evt)
     var jsonObject = JSON.parse(evt.data);
 
     // Special Client INIT values:
+    /*
     if(jsonObject.TV){
         tv.value = jsonObject.TV;
         tv_change_value(tv.value);
@@ -273,7 +275,7 @@ function onMessage(evt)
     if(jsonObject.TempSoll){
         heizung_soll.value = jsonObject.TempSoll;
         heizung_soll_change_value(jsonObject.TempSoll);
-    }
+    }*/
     
     // Normal Server INFO values:
     if(jsonObject.TempIst){
