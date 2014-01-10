@@ -139,6 +139,7 @@ function lampe_change_value(slideAmount){
 	send_kronleuchter_pair(slideAmount);
  }
  
+ /* Handler für Heizungsslider, Kommunikation zum Huesli */
  function heizung_soll_slider_callback(slideAmount){
 	/* Hier Wert an BeagleBone senden */
 	sendHeizungPair(slideAmount);
@@ -182,16 +183,14 @@ heizung_ist_change(heizung_ist_defaultwert);
 	};
  }
  
+/* Handler für Alarm-aktivierung, GUI aktualisieren und Kommunikation zum Huesli */
  function alarm_active_callback(value){
-    if(alarm_active.checked){
-        sendAlarmPair("ACTIVE");
-    } else {
-        sendAlarmPair("INACTIVE");
-    }
+    /* no special functionality here */
  }
  
 
 function play_alarm(){
+    /* Play sound */
  	alarm.value = "ON";
 	snd.load();
 	snd.play();
@@ -199,10 +198,10 @@ function play_alarm(){
 }
  
  function reset_alarm(){
+    /* stop sound */
 	alarm.value = "OFF";
 	
 	snd.pause();
-    sendAlarmResetPair();
  }
  
  /* Handler fure Mouse-click registrieren */ 
@@ -258,7 +257,7 @@ function onMessage(evt)
     /* Es könnten mehrere Pairs in einer JSON Message sein, also damit rechnen */
     var jsonObject = JSON.parse(evt.data);
 
-    // Special Server INIT values:
+    // Special Client INIT values:
     if(jsonObject.TV){
         tv.value = jsonObject.TV;
         tv_change_value(tv.value);
@@ -275,9 +274,6 @@ function onMessage(evt)
         heizung_soll.value = jsonObject.TempSoll;
         heizung_soll_change_value(jsonObject.TempSoll);
     }
-    if(jsonObject.Alarm){
-        alarm_active.value = jsonObject.Alarm;
-    }
     
     // Normal Server INFO values:
     if(jsonObject.TempIst){
@@ -286,8 +282,9 @@ function onMessage(evt)
     if(jsonObject.Heizung){
         heizung_ist_change(jsonObject.TempSoll);
     }
-    if(jsonObject.Lichtschranke){
-        if(jsonObject.Lichtschranke === "ON"){
+    if(jsonObject.Burglar){
+        if(jsonObject.Burglar === 1 && alarm_active.checked){
+            /* if light barrier is broken AND the alarm is activated, alarm! */
             window.showModalDialog("#openModal");
             play_alarm();
         }
