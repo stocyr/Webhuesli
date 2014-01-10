@@ -35,7 +35,7 @@ function on_canvas_click(ev) {
 			kronleuchter.value = 0;
 		}
 		kronleuchter.onchange();
-        
+        //kronleuchter_slider_callback(kronleuchter.value);
         logToConsole('<span style="color: blue;">Kronleuchter: ' + kronleuchter.value+'</span>');
 	}
 	
@@ -48,7 +48,8 @@ function on_canvas_click(ev) {
 			lampe.value = 0;
 		}
 		lampe.onchange();
-        
+        //lampe_slider_callback(lampe.value);
+		
         logToConsole('<span style="color: blue;">Lampe: ' + lampe.value+'</span>');
 	}
 	
@@ -83,7 +84,7 @@ function tv_change_value(value){
 }
 
 function tv_change_callback(value){
-    tv_change_value();
+    tv_change_value(value);
     /* Hier Wert an BeagleBone senden */
     send_tv_pair(value);
 }
@@ -109,7 +110,7 @@ function lampe_change_value(slideAmount){
 
 /* Handler für Ständerlampe, GUI aktualisieren und Kommunikation zum Huesli */
  function lampe_slider_callback(slideAmount){
-    lampe_change_value();
+    lampe_change_value(slideAmount);
 	/* Hier Wert an BeagleBone senden */
     send_lamp_pair(slideAmount);
  }
@@ -135,7 +136,7 @@ function lampe_change_value(slideAmount){
  
  /* Handler für Kronleuchter, GUI aktualisieren und Kommunikation zum Huesli */
  function kronleuchter_slider_callback(slideAmount){
-    kronleuchter_change_value();
+    kronleuchter_change_value(slideAmount);
 	/* Hier Wert an BeagleBone senden */
 	send_kronleuchter_pair(slideAmount);
  }
