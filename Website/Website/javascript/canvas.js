@@ -36,7 +36,7 @@ function on_canvas_click(ev) {
 		}
 		kronleuchter.onchange();
         //kronleuchter_slider_callback(kronleuchter.value);
-        logToConsole('<span style="color: blue;">Kronleuchter: ' + kronleuchter.value+'</span>');
+        logToConsole('<span style="color: green;">Kronleuchter: ' + kronleuchter.value+'</span>');
 	}
 	
 	/* wenn auf Lampe gedrückt */
@@ -50,7 +50,7 @@ function on_canvas_click(ev) {
 		lampe.onchange();
         //lampe_slider_callback(lampe.value);
 		
-        logToConsole('<span style="color: blue;">Lampe: ' + lampe.value+'</span>');
+        logToConsole('<span style="color: green;">Lampe: ' + lampe.value+'</span>');
 	}
 	
 		/* wenn auf TV gedrückt */
@@ -63,7 +63,7 @@ function on_canvas_click(ev) {
         }
         tv_change_callback(tv.value);
 		
-		logToConsole('<span style="color: blue;">TV: ' + tv.value+'</span>');
+		logToConsole('<span style="color: green;">TV: ' + tv.value+'</span>');
 	}
 }
 
@@ -243,11 +243,18 @@ function ClearLogPressed()
 /* Websocket Management */
 initSocket();
 
+/* Handle a F5 (refresh) or tab close on browser --> close Websocket! */
+window.onbeforeunload = function() {
+    /* disable onclose handler first */
+    websocket.onclose = function () {};
+    websocket.close()
+};
+
 function initSocket(){
     webSocket = new WebSocket(address);
     
     webSocket.onopen = function (evt){ logToConsole("CONNECTED to " + address + ": " + evt.data); };
-    webSocket.onerror = function (evt){ logToConsole('<span style="color: red;">ERROR:</span> ' + evt.data); };
+    webSocket.onerror = function (evt){ logToConsole('<span style="color: red;">ERROR on ' + address + ':</span> ' + evt.data); };
     webSocket.onmessage = function (evt){ onMessage(evt); };
     webSocket.onclose = function (evt){ logToConsole("DISCONNECTED: " + evt.data); };
 }
