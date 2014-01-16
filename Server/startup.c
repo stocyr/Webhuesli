@@ -57,7 +57,6 @@
 
 #include "TCPServer.h"
 
-
 //----- Macros -----------------------------------------------------------------
 
 //----- Data types -------------------------------------------------------------
@@ -66,13 +65,8 @@
 static void shutdownHook(int32_t sig);
 
 //----- Data -------------------------------------------------------------------
-static volatile boolE eShutdown = FALSE;
-
-
-//todo: (was ist das?) Provisorisch auf -1,
-// war vorher undefiniert, deshalb nie in while(rvalue < 0)
-int rvalue = -1;
-
+enum state {NORMAL, SHUTDOWN, CLOSING};
+static volatile int eShutdown = NORMAL;
 
 //----- Implementation ---------------------------------------------------------
 
@@ -107,94 +101,90 @@ int main(int argc, char **argv) {
 	/* Initialize the webhouse */
 	error = initWebhouse();
 
-	INFOPRINT("Start of BBB Webhouse with Websocket TCP Server on port 9000");
+	printf("\nStart of BBB Webhouse with Websocket TCP Server on port 5000");
 
-	if((error == BBB_SUCCESS) && (registerExitHandler(shutdownHook) == BBB_SUCCESS))
-	{
+	if ((error == BBB_SUCCESS) && (registerExitHandler(shutdownHook) == BBB_SUCCESS)) {
 		// ###############################################################
 		// 			start effective TCP WEbsocket Server HERE
 		// ###############################################################
 
-		int bind_status;
-		int listen_status;
-
-	/* Create Server Socked (SS) */
+		/* Create Server Socked (SS) */
 		sockfd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-		printf("socket created\n");
+		//printf("socket created\n");
 
-	/* Bind */
-	//	memset(&server_addr 0, sizeof(server_addr));	// zero the struct before filling the fields
+		/* Bind */
+		//	memset(&server_addr 0, sizeof(server_addr));	// zero the struct before filling the fields
+		bzero((char *) &serv_addr, sizeof(serv_addr));
 		serv_addr.sin_family = AF_INET;
-		serv_addr.sin_port = htons(SERVER_PORT_NBR);
 		serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+		serv_addr.sin_port = htons(SERVER_PORT_NBR);
 
-		bind_status = bind(sockfd, (struct sockaddr*)&serv_addr, sizeof(struct sockaddr_in));
-		if(bind_status < 0)
-		{
+		if( bind(sockfd, (struct sockaddr*) &serv_addr,
+				sizeof(struct sockaddr_in)) < 0) {
 			close(sockfd);
-		}
-		else
-		{
+			INFOPRINT("\nbinding failed!");
+		} else {
 			/* Socket bound to desired port now */
-			printf("socket bound to desired port\n");
+			//printf("socket bound to desired port\n");
 
-		/* Listen */
-			listen_status = listen(sockfd, BACKLOG);
-			if (listen_status < 0)
-			{
+			/* Listen */
+			if (listen(sockfd, BACKLOG) < 0) {
 				close(sockfd);
-			}
-			else
-			{
+				INFOPRINT("\nlistening failed!");
+			} else {
 				/* Socket placed in listening state now */
-				printf("socket in listening state now\n");
+				printf("\nsocket in listening state now\n");
 
-			/* Accept */
+				/* Accept */
 				/* get data length of addr_remote */
 				clilen = sizeof(cli_addr);
 
-				while(eShutdown != TRUE)
-				{
-					newsockfd = accept(sockfd, (struct sockaddr*)&cli_addr, &clilen);
-					if(newsockfd < 0)
-					{
+				while (eShutdown != SHUTDOWN) {
+					newsockfd = accept(sockfd, (struct sockaddr*) &cli_addr,
+							&clilen);
+
+					if (newsockfd < 0) {
 						close(sockfd);
-					}
-					else
-					{
-						/* Connection established now, use newSock_id to communicate with client */
-						printf("connection established\n");
+					} else {
+						printf("\nconnection established");
+						bzero(rxBuf, RX_BUFFER_SIZE);
+						bzero(txBuf, TX_BUFFER_SIZE);
 
-						// todo: senden der anfangszustände des webhueslis
+						while (eShutdown != CLOSING) {
+							/* Connection established now, use newSock_id to communicate with client */
 
-						while(rvalue < 0)
-						{
-						/* Receive Data and execute the given informations */
-							rvalue = receiveDataTCP(); //returns a value < 0 by an error or close condition
 
-						/* Send Data */
-							// if(send by diff)
-							/* rxBuf in txBuf kopieren */
-							strcpy(txBuf, rxBuf);
-							sendDataTCP();
+							// todo: senden der anfangszustände des webhueslis
+
+							n = recv(newsockfd, rxBuf, RX_BUFFER_SIZE, MSG_DONTWAIT);
+
+							if(n > 0) {
+								rxBuf[n] = '\0';
+								printf("\nmsg (n=%d) = \n{\n%s\n}\n", n, rxBuf);
+								send(newsockfd, rxBuf, n, 0);
+							}
+							if(n == 0) {
+								printf("\nConnection closed by client.");
+								eShutdown = CLOSING;
+							}
 						}
 					}
 				}
+				close(sockfd);
+				close(newsockfd);
 			}
 		}
 
 		// ###############################################################
 		// 				END OF TCP SERVER
 		// ###############################################################
-	}
-	else
-	{
+	} else {
 		ERRORPRINT("Failed to start BBB Webhouse");
 	}
 
 	/* Detach all resource */
 	finalizeWebhouse();
-	INFOPRINT("Stop of BBB webhouse");
+	printf("\n\nStop of BBB webhouse \n");
 
 	return EXIT_SUCCESS;
 }
@@ -213,9 +203,7 @@ int main(int argc, char **argv) {
  ******************************************************************************/
 static void shutdownHook(int32_t sig) {
 
-	INFOPRINT("Ctrl-C pressed....shutdown hook in main");
-	eShutdown = TRUE;
-	close(sockfd);
-	close(newsockfd);
+	printf("Ctrl-C pressed....shutdown hook in main");
+	eShutdown = SHUTDOWN;
 }
 

@@ -19,8 +19,8 @@
 
 #define BACKLOG 5
 
-#define RX_BUFFER_SIZE 256
-#define TX_BUFFER_SIZE 256
+#define RX_BUFFER_SIZE 500
+#define TX_BUFFER_SIZE 500
 
 extern int sockfd;
 extern int newsockfd;

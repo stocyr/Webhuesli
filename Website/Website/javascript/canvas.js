@@ -15,7 +15,7 @@ var alarm = document.getElementById("label_alarm");
 var snd = new Audio("../multimedia/alarm.ogg"); // buffers automatically when created
 //var address = "ws://echo.websocket.org";
 //var address = "ws://" + "147.87.174.91" + ":5000";
-var address = "ws://" + location.host + ":5000";
+var address = "ws://" + location.hostname;
 
 //var rangeslider = document.getElementByID("rangevalue");
 
@@ -251,7 +251,7 @@ window.onbeforeunload = function() {
 };
 
 function initSocket(){
-    webSocket = new WebSocket(address);
+    webSocket = new WebSocket(address, 'webhuesli-protocol');
     
     webSocket.onopen = function (evt){ logToConsole("CONNECTED to " + address + ": " + evt.data); };
     webSocket.onerror = function (evt){ logToConsole('<span style="color: red;">ERROR on ' + address + ':</span> ' + evt.data); };
