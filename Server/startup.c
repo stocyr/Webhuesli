@@ -96,7 +96,7 @@ int main(int argc, char **argv) {
 
 	socklen_t clilen;
 	struct sockaddr_in serv_addr, cli_addr;
-	int n;
+	int n, m;
 
 	/* Initialize the webhouse */
 	error = initWebhouse();
@@ -150,7 +150,7 @@ int main(int argc, char **argv) {
 						bzero(rxBuf, RX_BUFFER_SIZE);
 						bzero(txBuf, TX_BUFFER_SIZE);
 
-						while (eShutdown != CLOSING) {
+						while (eShutdown != CLOSING && eShutdown != SHUTDOWN) {
 							/* Connection established now, use newSock_id to communicate with client */
 
 
@@ -161,7 +161,9 @@ int main(int argc, char **argv) {
 							if(n > 0) {
 								rxBuf[n] = '\0';
 								printf("\nmsg (n=%d) = \n{\n%s\n}\n", n, rxBuf);
-								send(newsockfd, rxBuf, n, 0);
+								receiveAndSetValues(rxBuf, n);
+								//m = transmitAndGetValues(rxBuf, n);
+								//send(newsockfd, txBuf, m, 0);
 							}
 							if(n == 0) {
 								printf("\nConnection closed by client.");
