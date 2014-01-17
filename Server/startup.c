@@ -54,6 +54,7 @@
 #include "BBBConfig.h"
 #include "BBBSignal.h"
 #include "Json.h"
+#include "RxTxJSON.h"
 
 #include "TCPServer.h"
 
@@ -65,7 +66,9 @@
 static void shutdownHook(int32_t sig);
 
 //----- Data -------------------------------------------------------------------
-enum state {NORMAL, SHUTDOWN, CLOSING};
+enum state {
+	NORMAL, SHUTDOWN, CLOSING
+};
 static volatile int eShutdown = NORMAL;
 
 //----- Implementation ---------------------------------------------------------
@@ -103,7 +106,8 @@ int main(int argc, char **argv) {
 
 	printf("\nStart of BBB Webhouse with Websocket TCP Server on port 5000");
 
-	if ((error == BBB_SUCCESS) && (registerExitHandler(shutdownHook) == BBB_SUCCESS)) {
+	if ((error == BBB_SUCCESS)
+			&& (registerExitHandler(shutdownHook) == BBB_SUCCESS)) {
 		// ###############################################################
 		// 			start effective TCP WEbsocket Server HERE
 		// ###############################################################
@@ -119,14 +123,13 @@ int main(int argc, char **argv) {
 		serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 		serv_addr.sin_port = htons(SERVER_PORT_NBR);
 
-		if( bind(sockfd, (struct sockaddr*) &serv_addr,
+		if (bind(sockfd, (struct sockaddr*) &serv_addr,
 				sizeof(struct sockaddr_in)) < 0) {
 			close(sockfd);
 			INFOPRINT("\nbinding failed!");
 		} else {
 			/* Socket bound to desired port now */
 			//printf("socket bound to desired port\n");
-
 			/* Listen */
 			if (listen(sockfd, BACKLOG) < 0) {
 				close(sockfd);
@@ -153,24 +156,31 @@ int main(int argc, char **argv) {
 						while (eShutdown != CLOSING && eShutdown != SHUTDOWN) {
 							/* Connection established now, use newSock_id to communicate with client */
 
-
 							// todo: senden der anfangszustände des webhueslis
+							n = recv(newsockfd, rxBuf, RX_BUFFER_SIZE,
+							MSG_DONTWAIT);
 
-							n = recv(newsockfd, rxBuf, RX_BUFFER_SIZE, MSG_DONTWAIT);
-
-							if(n > 0) {
+							if (n > 0) {
+								// RECEIVE
 								rxBuf[n] = '\0';
-								printf("\nmsg (n=%d) = \n{\n%s\n}\n", n, rxBuf);
+								printf("\nRECV = \"%s\"", rxBuf);
 								receiveAndSetValues(rxBuf, n);
-								//m = transmitAndGetValues(rxBuf, n);
-								//send(newsockfd, txBuf, m, 0);
 							}
-							if(n == 0) {
+							if (n == 0) {
+								// CLOSE
 								printf("\nConnection closed by client.");
 								eShutdown = CLOSING;
 							}
 
-							// execute regelungsfunktion
+							// SEND (OR CHECK IF SEND MAKES SENSE)
+							m = controlWebhouseValues(txBuf);
+							if (m != 0) {
+								send(newsockfd, txBuf, m, 0);
+								txBuf[m] = '\0';
+								printf("\nSENT = \"%s\"", txBuf);
+							}
+
+							usleep(10000);
 						}
 					}
 				}

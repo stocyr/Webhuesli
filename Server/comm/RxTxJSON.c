@@ -17,6 +17,8 @@
 
 /* Implementation ------------------------------------------------------------*/
 
+char TemperaturSoll = 20;
+
 /*******************************************************************************
  *  function :    receiveAndSetValues
  ******************************************************************************/
@@ -31,7 +33,6 @@ void receiveAndSetValues(char * rxBuf, int rx_data_len) {
 	/* Webhuesli variables, initialised with default values */
 	char Stehlampe = 0;
 	char Kronleuchter = 0;
-	char TemperaturSoll = 20;
 	char * last_occurrence;
 
 	/* JSON variables */
@@ -82,7 +83,7 @@ void receiveAndSetValues(char * rxBuf, int rx_data_len) {
 		if (pcValue != NULL) {
 			/* String zu Zahl konvertieren */
 			TemperaturSoll = atoi(pcValue);
-			dimHeizung(TemperaturSoll);
+			//dimHeizung(TemperaturSoll);
 			printf("\n Temperatur: %d", TemperaturSoll);
 		}
 
@@ -104,7 +105,8 @@ void receiveAndSetValues(char * rxBuf, int rx_data_len) {
  *  \return       none
  *
  ******************************************************************************/
-int transmitAndGetValues(char * txBuf, char mode) {
+int transmitAndGetValues(char * txBuf, boolE isttempflag, boolE heizungflag,
+		boolE schrankeflag) {
 	/* Assign values */
 	char TemperaturIst = getTempIst();
 	char Heizung = getHeizungState();
@@ -122,17 +124,17 @@ int transmitAndGetValues(char * txBuf, char mode) {
 		/* Define key-value pairs */
 		char jsonBuffer[20];
 		/* Check mode */
-		if (mode == MODE_ALL || mode == MODE_ITEMP) {
+		if (isttempflag) {
 			/* Ist-Temperatur */
 			sprintf(jsonBuffer, "%d", TemperaturIst);
 			setJsonStringKeyValue(jsonMsg, "TempIst", jsonBuffer);
 		}
-		if (mode == MODE_ALL || mode == MODE_HEIZU) {
+		if (heizungflag) {
 			/* Heizung */
 			sprintf(jsonBuffer, "%d", Heizung);
 			setJsonStringKeyValue(jsonMsg, "Heizung", jsonBuffer);
 		}
-		if (mode == MODE_ALL || mode == MODE_LICHT) {
+		if (schrankeflag) {
 			/* Lichtschranke */
 			sprintf(jsonBuffer, "%d", Lichtschranke);
 			setJsonStringKeyValue(jsonMsg, "Burglar", jsonBuffer);
@@ -144,7 +146,7 @@ int transmitAndGetValues(char * txBuf, char mode) {
 			/* Write to transmit buffer */
 			txBuf = pcMsg;
 
-			while(txBuf[length] != '\0')
+			while (txBuf[length] != '\0')
 				length++;
 
 			/* Free ressources */
@@ -167,19 +169,41 @@ int transmitAndGetValues(char * txBuf, char mode) {
  *  \return       none
  *
  ******************************************************************************/
-void transmitAndGetValues(char TemperaturSoll) {
+int controlWebhouseValues(char * txBuf) {
+	static int TemperaturIst_old = 0;
+	static int Lichtschranke_old = 0;
+	boolE isttempflag = FALSE, heizungflag = FALSE, schrankeflag = FALSE;
 
 	/* Get Ist-Temperatur */
 	char TemperaturIst = getTempIst();
-	
+
 	/* Zweipunkteregelung */
-	if(TemperaturIst < TemperaturSoll) {
-		dimHeizung(100);  /* 100% */
+	if (TemperaturIst < TemperaturSoll) {
+		dimHeizung(100); /* 100% */
+		heizungflag = TRUE;
+	} else if (TemperaturIst > TemperaturSoll) {
+		dimHeizung(0); /*   0% */
+		heizungflag = TRUE;
 	}
-	else if(TemperaturIst > TemperaturSoll) {
-		dimHeizung(0);    /*   0% */
+
+	if (TemperaturIst_old != getTempIst()) {
+		isttempflag = TRUE;
 	}
-	else {
-		/* Don't update */
+
+	if (TemperaturIst_old != getAlarmState()) {
+		schrankeflag = TRUE;
 	}
- }
+
+	TemperaturIst_old = getTempIst();
+	Lichtschranke_old = getAlarmState();
+
+	printf("isttemp=%d solltemp=%d %s %s %s", TemperaturIst, TemperaturSoll,
+			isttempflag ? "isttempflag" : "", heizungflag ? "heizungflag" : "",
+			schrankeflag ? "schrankeflag" : "");
+	if (!isttempflag && !heizungflag && !schrankeflag) {
+		return 0;
+	} else {
+		return transmitAndGetValues(txBuf, isttempflag, heizungflag,
+				schrankeflag);
+	}
+}

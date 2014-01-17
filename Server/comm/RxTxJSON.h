@@ -21,7 +21,8 @@
 #define MODE_ALL   4 /* Send Ist-Temperatur, Heizung und Lichtschranke values */
 
 //----- Function prototypes ----------------------------------------------------
-extern int transmitAndGetValues(char * txBuf, char mode);
 extern void receiveAndSetValues(char * rxBuf, int rx_data_len);
+extern int transmitAndGetValues(char * txBuf, boolE isttempflag, boolE heizungflag, boolE schrankeflag);
+extern int controlWebhouseValues(char * txBuf);
 
 #endif /* RXTXJSON_H_ */
