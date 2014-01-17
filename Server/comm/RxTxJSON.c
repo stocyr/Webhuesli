@@ -32,11 +32,17 @@ void receiveAndSetValues(char * rxBuf, int rx_data_len) {
 	char Stehlampe = 0;
 	char Kronleuchter = 0;
 	char TemperaturSoll = 20;
+	char * last_occurrence;
 
 	/* JSON variables */
 	// char * pcString = "{\"Hello\":\"World\"}";
 	char * pcValue = NULL;
 	json_t *jsonMsg = NULL;
+
+	/* preprocess JSON msg: delete all {...} pairs except the last one */
+	last_occurrence = strrchr(rxBuf, '{');
+	rxBuf = last_occurrence;
+	rx_data_len = (rxBuf + rx_data_len) - last_occurrence;
 
 	/* Handle received JSON */
 	jsonMsg = createJsonFromBuffer(rxBuf, rx_data_len);
