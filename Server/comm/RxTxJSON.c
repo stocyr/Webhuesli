@@ -41,8 +41,9 @@ void receiveAndSetValues(char * rxBuf, int rx_data_len) {
 
 	/* preprocess JSON msg: delete all {...} pairs except the last one */
 	last_occurrence = strrchr(rxBuf, '{');
-	rxBuf = last_occurrence;
 	rx_data_len = (rxBuf + rx_data_len) - last_occurrence;
+	//printf("DEBUG:\n%d, %d, %d:\n\"%s\"", (int)rxBuf, (int)last_occurrence, rx_data_len, last_occurrence);
+	rxBuf = last_occurrence;
 
 	/* Handle received JSON */
 	jsonMsg = createJsonFromBuffer(rxBuf, rx_data_len);
