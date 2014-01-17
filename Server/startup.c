@@ -103,6 +103,7 @@ int main(int argc, char **argv) {
 
 	/* Initialize the webhouse */
 	error = initWebhouse();
+	enableAlarm();
 
 	printf("\nStart of BBB Webhouse with Websocket TCP Server on port 5000");
 
@@ -156,6 +157,14 @@ int main(int argc, char **argv) {
 						while (eShutdown != CLOSING && eShutdown != SHUTDOWN) {
 							/* Connection established now, use newSock_id to communicate with client */
 
+							// SEND (OR CHECK IF SEND MAKES SENSE)
+							/* this has a certain delay in it! */
+							m = controlWebhouseValues(txBuf);
+							if (m != 0) {
+								printf("\nSENT(%d) = \"%s\"", m, txBuf);
+								send(newsockfd, txBuf, m, 0);
+							}
+
 							// todo: senden der anfangszustände des webhueslis
 							n = recv(newsockfd, rxBuf, RX_BUFFER_SIZE,
 							MSG_DONTWAIT);
@@ -171,18 +180,9 @@ int main(int argc, char **argv) {
 								printf("\nConnection closed by client.");
 								eShutdown = CLOSING;
 							}
-
-							// SEND (OR CHECK IF SEND MAKES SENSE)
-							m = controlWebhouseValues(txBuf);
-							if (m != 0) {
-								send(newsockfd, txBuf, m, 0);
-								txBuf[m] = '\0';
-								printf("\nSENT = \"%s\"", txBuf);
-							}
-
-							usleep(10000);
 						}
 					}
+					close(newsockfd);
 				}
 				close(sockfd);
 				close(newsockfd);

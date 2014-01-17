@@ -193,7 +193,6 @@ heizung_ist_change(heizung_ist_defaultwert);
 
 function play_alarm(){
     /* Play sound */
- 	alarm.value = "ON";
 	snd.load();
 	snd.play();
 	snd.addEventListener('ended',  function(){snd.play();});
@@ -201,8 +200,6 @@ function play_alarm(){
  
  function reset_alarm(){
     /* stop sound */
-	alarm.value = "OFF";
-	
 	snd.pause();
  }
  
@@ -287,16 +284,18 @@ function onMessage(evt)
     
     // Normal Server INFO values:
     if(jsonObject.TempIst){
-        label_temp_ist.value = jsonObject.TempSoll;
+        label_temp_ist.value = jsonObject.TempIst;
     }
     if(jsonObject.Heizung){
-        heizung_ist_change(jsonObject.TempSoll);
+        heizung_ist_change(jsonObject.TempIst);
     }
     if(jsonObject.Burglar){
-        if(jsonObject.Burglar === 1 && alarm_active.checked){
+        if(jsonObject.Burglar == 1 && alarm_active.checked){
+            logToConsole('<span style="color: red;">ALARM!</span>');
             /* if light barrier is broken AND the alarm is activated, alarm! */
-            window.showModalDialog("#openModal");
-            play_alarm();
+            //window.showModalDialog('#openModal');
+            alert("ALARM!");
+            //play_alarm();
         }
     }
 }

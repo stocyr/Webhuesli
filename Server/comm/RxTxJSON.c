@@ -10,6 +10,15 @@
 /* Header-Files --------------------------------------------------------------*/
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <time.h>
+#include <string.h>
+#include <arpa/inet.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
 
 #include "Json.h"
 #include "RxTxJSON.h"
@@ -110,7 +119,6 @@ int transmitAndGetValues(char * txBuf, boolE isttempflag, boolE heizungflag,
 	/* Assign values */
 	char TemperaturIst = getTempIst();
 	char Heizung = getHeizungState();
-	char Lichtschranke = getAlarmState();
 
 	/* JSON variables */
 	// char * pcString = "{\"Hello\":\"World\"}";
@@ -136,7 +144,7 @@ int transmitAndGetValues(char * txBuf, boolE isttempflag, boolE heizungflag,
 		}
 		if (schrankeflag) {
 			/* Lichtschranke */
-			sprintf(jsonBuffer, "%d", Lichtschranke);
+			sprintf(jsonBuffer, "%d", 1);
 			setJsonStringKeyValue(jsonMsg, "Burglar", jsonBuffer);
 		}
 
@@ -144,10 +152,15 @@ int transmitAndGetValues(char * txBuf, boolE isttempflag, boolE heizungflag,
 		pcMsg = getStringRep(jsonMsg);
 		if (pcMsg != NULL) {
 			/* Write to transmit buffer */
-			txBuf = pcMsg;
+			printf("\n Theory SENT = \"%s\"", pcMsg);
 
-			while (txBuf[length] != '\0')
+			while (pcMsg[length] != '\0')
 				length++;
+			printf(" length = %d", length);
+			strcpy(txBuf, pcMsg);
+			while (pcMsg[length] != '\0')
+				length++;
+			printf(" length = %d", length);
 
 			/* Free ressources */
 			cleanUpStringRep(pcMsg);
@@ -171,7 +184,10 @@ int transmitAndGetValues(char * txBuf, boolE isttempflag, boolE heizungflag,
  ******************************************************************************/
 int controlWebhouseValues(char * txBuf) {
 	static int TemperaturIst_old = 0;
-	static int Lichtschranke_old = 0;
+	int length = 0;
+	static int temp_up_counter = 0;
+	static int temp_down_counter = 0;
+
 	boolE isttempflag = FALSE, heizungflag = FALSE, schrankeflag = FALSE;
 
 	/* Get Ist-Temperatur */
@@ -179,31 +195,43 @@ int controlWebhouseValues(char * txBuf) {
 
 	/* Zweipunkteregelung */
 	if (TemperaturIst < TemperaturSoll) {
-		dimHeizung(100); /* 100% */
-		heizungflag = TRUE;
+		if (++temp_up_counter >= 100) {
+			dimHeizung(100); /* 100% */
+			heizungflag = TRUE;
+			temp_up_counter = 0;
+		}
 	} else if (TemperaturIst > TemperaturSoll) {
-		dimHeizung(0); /*   0% */
-		heizungflag = TRUE;
+		if (++temp_down_counter >= 100) {
+			dimHeizung(0); /*   0% */
+			heizungflag = TRUE;
+			temp_down_counter = 0;
+		}
 	}
+
+	// delay 10ms
+	usleep(10000);
 
 	if (TemperaturIst_old != getTempIst()) {
 		isttempflag = TRUE;
 	}
 
-	if (TemperaturIst_old != getAlarmState()) {
+	if (isAlarmSet()) {
 		schrankeflag = TRUE;
+		resetAlarm();
 	}
 
 	TemperaturIst_old = getTempIst();
-	Lichtschranke_old = getAlarmState();
 
-	printf("isttemp=%d solltemp=%d %s %s %s", TemperaturIst, TemperaturSoll,
-			isttempflag ? "isttempflag" : "", heizungflag ? "heizungflag" : "",
-			schrankeflag ? "schrankeflag" : "");
 	if (!isttempflag && !heizungflag && !schrankeflag) {
-		return 0;
+		length = 0;
 	} else {
-		return transmitAndGetValues(txBuf, isttempflag, heizungflag,
+		printf("\nisttemp=%d solltemp=%d %s %s %s", TemperaturIst,
+				TemperaturSoll, isttempflag ? "isttempflag" : "",
+				heizungflag ? "heizungflag" : "",
+				schrankeflag ? "schrankeflag" : "");
+		length = transmitAndGetValues(txBuf, isttempflag, heizungflag,
 				schrankeflag);
 	}
+
+	return length;
 }
