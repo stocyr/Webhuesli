@@ -169,6 +169,8 @@ int main(int argc, char **argv) {
 								printf("\nConnection closed by client.");
 								eShutdown = CLOSING;
 							}
+
+							// execute regelungsfunktion
 						}
 					}
 				}
