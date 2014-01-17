@@ -85,9 +85,9 @@ void receiveAndSetValues(char * rxBuf, int rx_data_len) {
 }
 
 /*******************************************************************************
- *  function :    receiveAndSetValues
+ *  function :    trasmitAndGetValues
  ******************************************************************************/
-/** \brief        Receives values as JSON and sets them
+/** \brief        Gets the values and transmits them as JSON
  *
  *  \param[in]    mode = MODE_ITEMP : Only send Ist-Temperatur value                       
  *                mode = MODE_HEIZU : Only send Heizung value                              
@@ -149,3 +149,30 @@ int transmitAndGetValues(char * txBuf, char mode) {
 
 	return length;
 }
+
+/*******************************************************************************
+ *  function :    heizungControl
+ ******************************************************************************/
+/** \brief        Controls the Heizung according to the Soll-Temperatur
+ *
+ *  \param[in]    TemperaturSoll Soll-Temperatur
+ *
+ *  \return       none
+ *
+ ******************************************************************************/
+void transmitAndGetValues(char TemperaturSoll) {
+
+	/* Get Ist-Temperatur */
+	char TemperaturIst = getTempIst();
+	
+	/* Zweipunkteregelung */
+	if(TemperaturIst < TemperaturSoll) {
+		dimHeizung(100);  /* 100% */
+	}
+	else if(TemperaturIst > TemperaturSoll) {
+		dimHeizung(0);    /*   0% */
+	}
+	else {
+		/* Don't update */
+	}
+ }
