@@ -13,8 +13,6 @@
 /* Header-Files --------------------------------------------------------------*/
 #include <string.h>
 #include <stdlib.h>
-
-#include "Json.h"
  
 /* exported define -----------------------------------------------------------*/
 #define MODE_ITEMP 1 /* Only send Ist-Temperatur value                        */
@@ -23,7 +21,8 @@
 #define MODE_ALL   4 /* Send Ist-Temperatur, Heizung und Lichtschranke values */
 
 //----- Function prototypes ----------------------------------------------------
-extern void transmitAndGetValues(char mode);
-extern void receiveAndSetValues(void);
+extern void receiveAndSetValues(char * rxBuf, int rx_data_len);
+extern int transmitAndGetValues(char * txBuf, boolE isttempflag, boolE heizungflag, boolE schrankeflag);
+extern int controlWebhouseValues(char * txBuf);
 
 #endif /* RXTXJSON_H_ */

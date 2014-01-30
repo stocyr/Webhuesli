@@ -7,15 +7,12 @@ var wsEchoURI = "ws://echo.websocket.org";
 
 var consoleLog = document.getElementById("consoleLog");
 var sendBox = document.getElementById('data');
-var host = document.getElementById('host_name').value;
+var host = 
 
 ConnectPressed();   // already connect on load page
 
 function ConnectPressed(){
-    //webSocket = new WebSocket('127.0.0.1:5000', 'webhuesli-protocol');
-    //webSocket = new WebSocket('ws://' + location.hostname, 'webhuesli-protocol');
-    //webSocket = new WebSocket('ws://' + host + ':' + port, 'webhuesli-protocol');
-    webSocket = new WebSocket(host);
+    webSocket = new WebSocket(document.getElementById('host_name').value, 'webhuesli-protocol');
     
     webSocket.onopen = function (evt){ onOpen(evt) };
     webSocket.onerror = function (evt){ onError(evt) };
@@ -31,6 +28,7 @@ function onOpen(evt)
 {
     //alert("socket has been opened!" + " Location=" + location.host);
     logToConsole("CONNECTED");
+    webSocket.send('Ping');
 }
 
 function onError(evt)
@@ -53,7 +51,8 @@ function onClose(evt)
 
 function SendPressed(){
     //alert(sendBox.value + " was sent.");
-    webSocket.send(sendBox.value);
+    //webSocket.send(sendBox.value);
+    webSocket.send('12345');
     logToConsole("SENT: " + sendBox.value);
 }
 

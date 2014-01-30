@@ -137,7 +137,7 @@ BBBError initWebhouse(void) {
 
     LOGINIT();
 
-    INFOPRINT("initialize BBB webhouse");
+    printf("\nInitialize BBB webhouse");
     error = initTV();
     error |= initLED();
     error |= initSLampe();
@@ -168,7 +168,7 @@ BBBError finalizeWebhouse(void) {
 
     BBBError error = BBB_SUCCESS;
 
-    INFOPRINT("finalize BBB webhouse");
+    printf("\nfinalize BBB webhouse");
     error = finalizeTV();
     error |= finalizeLED();
     error |= finalizeSLampe();

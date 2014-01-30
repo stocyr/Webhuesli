@@ -15,7 +15,7 @@ var alarm = document.getElementById("label_alarm");
 var snd = new Audio("../multimedia/alarm.ogg"); // buffers automatically when created
 //var address = "ws://echo.websocket.org";
 //var address = "ws://" + "147.87.174.91" + ":5000";
-var address = "ws://" + location.host + ":5000";
+var address = "ws://" + location.hostname;
 
 //var rangeslider = document.getElementByID("rangevalue");
 
@@ -193,7 +193,6 @@ heizung_ist_change(heizung_ist_defaultwert);
 
 function play_alarm(){
     /* Play sound */
- 	alarm.value = "ON";
 	snd.load();
 	snd.play();
 	snd.addEventListener('ended',  function(){snd.play();});
@@ -201,8 +200,6 @@ function play_alarm(){
  
  function reset_alarm(){
     /* stop sound */
-	alarm.value = "OFF";
-	
 	snd.pause();
  }
  
@@ -262,7 +259,7 @@ window.onbeforeunload = function() {
 };
 
 function initSocket(){
-    webSocket = new WebSocket(address);
+    webSocket = new WebSocket(address, 'webhuesli-protocol');
     
     webSocket.onopen = function (evt){ logToConsole("CONNECTED to " + address + ": " + evt.data); };
     webSocket.onerror = function (evt){ logToConsole('<span style="color: red;">ERROR on ' + address + ':</span> ' + evt.data); };
@@ -298,13 +295,14 @@ function onMessage(evt)
     
     // Normal Server INFO values:
     if(jsonObject.TempIst){
-        label_temp_ist.value = jsonObject.TempSoll;
+        label_temp_ist.value = jsonObject.TempIst;
     }
     if(jsonObject.Heizung){
-        heizung_ist_change(jsonObject.TempSoll);
+        heizung_ist_change(jsonObject.TempIst);
     }
     if(jsonObject.Burglar){
-        if(jsonObject.Burglar === 1 && alarm_active.checked){
+        if(jsonObject.Burglar == 1 && alarm_active.checked){
+            logToConsole('<span style="color: red;">ALARM!</span>');
             /* if light barrier is broken AND the alarm is activated, alarm! */
             openModalDialog();
             play_alarm();

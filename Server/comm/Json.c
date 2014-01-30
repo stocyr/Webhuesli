@@ -289,7 +289,7 @@ char * getJsonStringValue(json_t * pJson, char * pcKey) {
 
         pJsonTemp = json_object_get(pJson, pcKey);
         if (!json_is_string(pJsonTemp)) {
-            DEBUGPRINT("Can't get value of key %s \n", pcKey);
+            //DEBUGPRINT("Can't get value of key %s \n", pcKey);
         } else {
             pcValue = (char *) json_string_value(pJsonTemp);
         }
