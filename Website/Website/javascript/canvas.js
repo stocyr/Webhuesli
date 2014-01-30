@@ -240,6 +240,17 @@ function ClearLogPressed()
     }
 }
 
+/* test the modal dialog execution using javascript */
+function openModalDialog()
+{
+    // neccessary to avoid "#openModal" showing up in the URL
+    restoreUrl = location.href;
+    // jump to anchor defined in html_canvas -> div id = "openModal"
+    location.href = "#openModal";
+    // neccessary to avoid "#openModal" showing up in the URL
+    history.replaceState(null,null,restoreUrl);
+}
+
 /* Websocket Management */
 initSocket();
 
@@ -295,7 +306,7 @@ function onMessage(evt)
     if(jsonObject.Burglar){
         if(jsonObject.Burglar === 1 && alarm_active.checked){
             /* if light barrier is broken AND the alarm is activated, alarm! */
-            window.showModalDialog("#openModal");
+            openModalDialog();
             play_alarm();
         }
     }
